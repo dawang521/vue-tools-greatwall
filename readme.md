@@ -20,3 +20,5 @@ console.log(Great.arrayToTree)
 12.首字母大写
 13.生成随机字符串
 14.格式化时间 yyyy-MM-dd、yyyy-MM-dd HH:mm:ss
+15.JSON序列化，支持函数和 undefined,undefined返回null
+16.JSON反序列化，支持函数和 undefined

@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "crypto-js": "^4.2.0",
-    "js-file-download": "^0.4.12"
+    "js-file-download": "^0.4.12",
+    "uglify-js": "^3.17.4"
   }
 }

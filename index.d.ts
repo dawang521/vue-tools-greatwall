@@ -246,30 +246,129 @@ function toAnyString() {
 function formatTime(time: Date | number | string, fmt: string) {
     if (!time) return ''
     else {
-      const date = new Date(time)
-      const o = {
-        'M+': date.getMonth() + 1,
-        'd+': date.getDate(),
-        'H+': date.getHours(),
-        'm+': date.getMinutes(),
-        's+': date.getSeconds(),
-        'q+': Math.floor((date.getMonth() + 3) / 3),
-        S: date.getMilliseconds()
-      }
-      if (/(y+)/.test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
-      }
-      for (const k in o) {
-        if (new RegExp('(' + k + ')').test(fmt)) {
-          fmt = fmt.replace(
-            RegExp.$1,
-            RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length)
-          )
+        const date = new Date(time)
+        const o = {
+            'M+': date.getMonth() + 1,
+            'd+': date.getDate(),
+            'H+': date.getHours(),
+            'm+': date.getMinutes(),
+            's+': date.getSeconds(),
+            'q+': Math.floor((date.getMonth() + 3) / 3),
+            S: date.getMilliseconds()
         }
-      }
-      return fmt
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+        }
+        for (const k in o) {
+            if (new RegExp('(' + k + ')').test(fmt)) {
+                fmt = fmt.replace(
+                    RegExp.$1,
+                    RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length)
+                )
+            }
+        }
+        return fmt
     }
-  }
+}
+/**
+* * JSON序列化，支持函数和 undefined,undefined返回null 15
+* @param data
+*/
+export const JSONStringify = <T>(data: T) => {
+    return JSON.stringify(
+        data,
+        (key, val) => {
+            // 处理函数丢失问题
+            if (typeof val === 'function') {
+                return `${val}`
+            }
+            // 处理 undefined 丢失问题
+            if (typeof val === 'undefined') {
+                return null
+            }
+            return val
+        },
+        2
+    )
+}
+export const evalFn = (fn: string) => {
+    var Fun = Function // 一个变量指向Function，防止前端编译工具报错
+    return new Fun('return ' + fn)()
+}
+/**
+* * JSON反序列化，支持函数和 undefined  16
+* @param data
+*/
+export const JSONParse = (data: string) => {
+    let excludeParseEventKeyList = ['filter', 'vnodeMounted', 'vnodeBeforeMount', 'click', 'dblclick', 'mouseenter', 'mouseleave']
+    // 请求里的函数语句
+    let excludeParseEventValueList = ['javascript:']
+    return JSON.parse(data, (k, v) => {
+        // 过滤函数字符串
+        if (excludeParseEventKeyList.includes(k)) return v
+        // 过滤函数值表达式
+        if (typeof v === 'string') {
+            const someValue = excludeParseEventValueList.some(excludeValue => v.indexOf(excludeValue) > -1)
+            if (someValue) return v
+        }
+        // 还原函数值
+        if (typeof v === 'string' && v.indexOf && (v.indexOf('function') > -1 || v.indexOf('=>') > -1)) {
+            return evalFn(`(function(){return ${v}})()`)
+        } else if (typeof v === 'string' && v.indexOf && v.indexOf('return ') > -1) {
+            const baseLeftIndex = v.indexOf('(')
+            if (baseLeftIndex > -1) {
+                const newFn = `function ${v.substring(baseLeftIndex)}`
+                return evalFn(`(function(){return ${newFn}})()`)
+            }
+        }
+        return v
+    })
+}
+// 页面添加水印效果
+const setWatermark = (str: string) => {
+    const id = '1.23452384164.123412416';
+    if (document.getElementById(id) !== null) document.body.removeChild(<HTMLElement>document.getElementById(id));
+    const can = document.createElement('canvas');
+    can.width = 200;
+    can.height = 130;
+    const cans = <CanvasRenderingContext2D>can.getContext('2d');
+    cans.rotate((-20 * Math.PI) / 180);
+    cans.font = '12px Vedana';
+    cans.fillStyle = 'rgba(200, 200, 200, 0.30)';
+    cans.textBaseline = 'middle';
+    cans.fillText(str, can.width / 10, can.height / 2);
+    const div = document.createElement('div');
+    div.id = id;
+    div.style.pointerEvents = 'none';
+    div.style.top = '0px';
+    div.style.left = '0px';
+    div.style.position = 'fixed';
+    div.style.zIndex = '10000000';
+    div.style.width = `${document.documentElement.clientWidth}px`;
+    div.style.height = `${document.documentElement.clientHeight}px`;
+    div.style.background = `url(${can.toDataURL('image/png')}) left top repeat`;
+    document.body.appendChild(div);
+    return id;
+};
+
+/**
+ * 页面添加水印效果
+ * @method set 设置水印
+ * @method del 删除水印
+ */
+const watermark = {
+    // 设置水印
+    set: (str: string) => {
+        let id = setWatermark(str);
+        if (document.getElementById(id) === null) id = setWatermark(str);
+    },
+    // 删除水印
+    del: () => {
+        let id = '1.23452384164.123412416';
+        if (document.getElementById(id) !== null) document.body.removeChild(<HTMLElement>document.getElementById(id));
+    },
+};
+
 const Great = {
     arrayToTree,
     deepClone,
@@ -284,6 +383,10 @@ const Great = {
     isChinese,
     firstUpperCase,
     toAnyString,
-    formatTime
+    formatTime,
+    JSONStringify,
+    JSONParse,
+    watermark,
+    setWatermark
 } as IObject
 export default Great
