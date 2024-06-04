@@ -324,7 +324,7 @@ export const JSONParse = (data: string) => {
         return v
     })
 }
-// 页面添加水印效果
+// 页面添加水印效果 17
 const setWatermark = (str: string) => {
     const id = '1.23452384164.123412416';
     if (document.getElementById(id) !== null) document.body.removeChild(<HTMLElement>document.getElementById(id));
@@ -352,7 +352,7 @@ const setWatermark = (str: string) => {
 };
 
 /**
- * 页面添加水印效果
+ * 页面添加删除水印效果  18
  * @method set 设置水印
  * @method del 删除水印
  */
