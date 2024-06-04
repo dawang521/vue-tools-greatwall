@@ -368,6 +368,106 @@ import CryptoJS from 'crypto-js'
                 if (document.getElementById(id) !== null) document.body.removeChild(document.getElementById(id));
             },
         },
+        /**
+         * 数组求和   19
+         * @param values 数字数组
+         * @return 求和结果，默认为 0
+         */
+        getSumValue(values) {
+            return values.reduce((prev, curr) => {
+                const value = Number(curr)
+                if (!Number.isNaN(value)) {
+                    return prev + curr
+                } else {
+                    return prev
+                }
+            }, 0)
+        },
+        /**
+         * 判断是否为空  20
+         */
+        validatenull(val) {
+            if (typeof val == 'boolean') {
+                return false;
+            }
+            if (typeof val == 'number') {
+                return false;
+            }
+            if (val instanceof Array) {
+                if (val.length == 0) return true;
+            } else if (val instanceof Object) {
+                if (JSON.stringify(val) === '{}') return true;
+            } else {
+                if (val == null || val == undefined || val == '') return true;
+                return false;
+            }
+            return false;
+        },
+        // 判断日期是星期几  21
+        getWeek(date) {
+            const week = new Date(date).getDay();
+            let str = "";
+            if (week == 0) {
+                str = "日";
+            } else if (week == 1) {
+                str = "一";
+            } else if (week == 2) {
+                str = "二";
+            } else if (week == 3) {
+                str = "三";
+            } else if (week == 4) {
+                str = "四";
+            } else if (week == 5) {
+                str = "五";
+            } else if (week == 6) {
+                str = "六";
+            }
+            return str;
+        },
+        /**
+         * @description 精准判断类型 22
+         * @param obj
+         */
+        typeOf(obj) {
+            const toString = Object.prototype.toString
+            const map = {
+                '[object Boolean]': 'boolean',
+                '[object Number]': 'number',
+                '[object String]': 'string',
+                '[object Function]': 'function',
+                '[object Array]': 'array',
+                '[object Date]': 'date',
+                '[object RegExp]': 'regExp',
+                '[object Undefined]': 'undefined',
+                '[object Null]': 'null',
+                '[object Object]': 'object',
+            }
+            return map[toString.call(obj)]
+        },
+        /**
+         * 判断两个对象是否相同 23
+         * @param a 要比较的对象一
+         * @param b 要比较的对象二
+         * @returns 相同返回 true，反之则反
+         */
+        isObjectValueEqual(a, b) {
+            if (!a || !b) return false;
+            let aProps = Object.getOwnPropertyNames(a);
+            let bProps = Object.getOwnPropertyNames(b);
+            if (aProps.length != bProps.length) return false;
+            for (let i = 0; i < aProps.length; i++) {
+                let propName = aProps[i];
+                let propA = a[propName];
+                let propB = b[propName];
+                if (!b.hasOwnProperty(propName)) return false;
+                if (propA instanceof Object) {
+                    if (!isObjectValueEqual(propA, propB)) return false;
+                } else if (propA !== propB) {
+                    return false;
+                }
+            }
+            return true;
+        },
 
     };
     return Great;
