@@ -468,6 +468,38 @@ import CryptoJS from 'crypto-js'
             }
             return true;
         },
+        /**
+         * @desc  函数节流 24
+         * @param {Function} fn
+         * @param {Number} wait
+         * @returns {Function}
+         */
+        throttle(fn, wait) {
+            let context, args;
+            let previous = 0;
+
+            return function () {
+                let now = +new Date();
+                context = this;
+                args = arguments;
+                if (now - previous > wait) {
+                    fn.apply(context, args);
+                    previous = now;
+                }
+            };
+        },
+        /**
+         * 判断两个数组是否相同 25
+         */
+        valueEquals (a, b) {
+            if (!(a instanceof Array)) return false;
+            if (!(b instanceof Array)) return false;
+            if (a.length !== b.length) return false;
+            for (let i = 0; i !== a.length; ++i) {
+              if (a[i] !== b[i]) return false;
+            }
+            return true;
+          },
 
     };
     return Great;

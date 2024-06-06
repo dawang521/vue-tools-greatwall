@@ -470,6 +470,39 @@ function isObjectValueEqual<T>(a: T, b: T): boolean {
 	}
 	return true;
 }
+/**
+ * 节流 24
+ * @param fn 函数
+ * @param wait 等待时间
+ * @returns 
+ */
+function throttle<Fn extends (...args: any[]) => void>(fn: Fn, wait: number): (...args: Parameters<Fn>) => void {
+    let context: unknown;
+    let args: any[];
+    let previous = 0;
+
+    return function(this: unknown) {
+        let now = +new Date();
+        context = this;
+        args = arguments as Parameters<Fn>;
+        if (now - previous > wait) {
+            fn.apply(context, args);
+            previous = now;
+        }
+    } as (...args: Parameters<Fn>) => void;
+}
+/**
+ * 判断两个数组是否相同 25
+ */
+function valueEquals<T>(a: T, b: T): boolean {
+    if (!(a instanceof Array)) return false;
+    if (!(b instanceof Array)) return false;
+    if (a.length !== b.length) return false;
+    for (let i = 0; i !== a.length; ++i) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+}
 
 
 
@@ -496,6 +529,8 @@ const Great = {
     validatenull,
     getWeek,
     typeOf,
-    isObjectValueEqual
+    isObjectValueEqual,
+    throttle,
+    valueEquals
 } as IObject
 export default Great

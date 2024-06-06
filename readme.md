@@ -5,7 +5,7 @@ import Great from 'vue-tools-greatwall'
 
 
 console.log(Great.arrayToTree)
-
+github地址：https://github.com/dawang521/vue-tools-greatwall
 1.数组转树形
 2.深克隆
 3.防抖
@@ -29,3 +29,5 @@ console.log(Great.arrayToTree)
 21.判断日期是星期几
 22.精准判断对象类型
 23.判断两个对象是否相同
+24.节流
+25.判断两个数组是否相同
