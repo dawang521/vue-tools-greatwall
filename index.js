@@ -491,15 +491,31 @@ import CryptoJS from 'crypto-js'
         /**
          * 判断两个数组是否相同 25
          */
-        valueEquals (a, b) {
+        valueEquals(a, b) {
             if (!(a instanceof Array)) return false;
             if (!(b instanceof Array)) return false;
             if (a.length !== b.length) return false;
             for (let i = 0; i !== a.length; ++i) {
-              if (a[i] !== b[i]) return false;
+                if (a[i] !== b[i]) return false;
             }
             return true;
-          },
+        },
+        /**
+         * 复制 26
+         * @param value
+         */
+        copyToClipboard(value) {
+            const transfer = document.createElement("textarea");
+            document.body.appendChild(transfer);
+            transfer.value = value;
+            transfer.focus();
+            transfer.select();
+            if (document.execCommand("copy")) {
+                document.execCommand("copy");
+            }
+            transfer.blur();
+            document.body.removeChild(transfer);
+        },
 
     };
     return Great;

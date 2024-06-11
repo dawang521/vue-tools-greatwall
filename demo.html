@@ -9,16 +9,14 @@
 
 <body>
     <script>
-        function  valueEquals (a, b) {
-            if (!(a instanceof Array)) return false;
-            if (!(b instanceof Array)) return false;
-            if (a.length !== b.length) return false;
-            for (let i = 0; i !== a.length; ++i) {
-              if (a[i] !== b[i]) return false;
-            }
-            return true;
-          }
-        console.log(valueEquals([1,3],[1]))
+        function  arrayToObject(rs, key, render) {
+            const o = {};
+            rs.forEach((x) => {
+                o[typeof key === "function" ? key(x) : x[key]] = render ? render(x) : x;
+            });
+            return o;
+        }
+        console.log(arrayToObject([{name:'zs'},{age:'ls'}],'name'))
     </script>
 </body>
 

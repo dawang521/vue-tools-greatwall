@@ -1,8 +1,6 @@
 import jsFileDownload from 'js-file-download'
 import CryptoJS from 'crypto-js';
-export interface IObject {
-    [key: string]: any
-}
+import { IFunction, IObject } from "./interface";
 //树形接口
 export interface TreeNode<T> {
     id: string | number;
@@ -78,7 +76,7 @@ function urlParamsToObj(url: string): Record<string, string> {
         return {} as Record<string, string>;
     }
     const obj: Record<string, string> = {};
-    const searchArr: IObject[] = search.split('&');
+    const searchArr: string[] = search.split('&');
     searchArr.forEach((v) => {
         const index = v.indexOf('=');
         if (index !== -1) {
@@ -503,7 +501,22 @@ function valueEquals<T>(a: T, b: T): boolean {
     }
     return true;
 }
-
+/**
+ * 复制 26
+ * @param value
+ */
+export const copyToClipboard = (value: string): void => {
+    const transfer = document.createElement("textarea");
+    document.body.appendChild(transfer);
+    transfer.value = value;
+    transfer.focus();
+    transfer.select();
+    if (document.execCommand("copy")) {
+      document.execCommand("copy");
+    }
+    transfer.blur();
+    document.body.removeChild(transfer);
+  };
 
 
 const Great = {
@@ -531,6 +544,7 @@ const Great = {
     typeOf,
     isObjectValueEqual,
     throttle,
-    valueEquals
+    valueEquals,
+    copyToClipboard,
 } as IObject
 export default Great
